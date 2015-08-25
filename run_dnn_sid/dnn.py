@@ -114,7 +114,7 @@ class AutoEncoder(object):
             print "\n...training for layer ", prior, " to ", current
             ds = SupervisedDataSet(prior,prior)
             print ("5here supervised dataset was built")#==============================
-            print("====================compressed_data_size=============")
+            print("8.====================compressed_data_size=============")
             print compressed_data.__sizeof__()
             if self.dropout_on:
                 noisy_data, originals = self.dropout(compressed_data, noise=0.2, bag=1, debug=True)
@@ -148,9 +148,9 @@ class AutoEncoder(object):
             compressor.addConnection(in_to_hidden)
             compressor.sortModules()
             compressed_data = [compressor.activate(d) for d in compressed_data]
-            del compressed_data  #del==============================================
+            #del compressed_data  #del==============================================
             compressed_supervised = [compressor.activate(d) for d in compressed_supervised]
-            del compressed_supervised  #del==============================================
+            #del compressed_supervised  #del==============================================
 
             self.nn.append(compressor)
 
