@@ -27,6 +27,7 @@ def grab_data(path):
 	print "grab_data_from_path:%s" % path
 	mfcc_vetor = []
 	singer_lables = []
+
 	for filename in os.listdir(path):
 
 		#mfcc = Features(path + '/' + filename, feature_params)
@@ -44,7 +45,7 @@ def grab_data(path):
 		print "===============singername@mfcc============="
 		print(singger_name_float)
 		# change target label to float
-		for row in range(len(datamfcc[1, :])):
+		for row in range(len(datamfcc[1, :])-1):
 			# split the matrix and match with the right singer
 			datamfcc_row = datamfcc[:, row]
 			nomlize_datamfcc_row = nomlize_data_row(datamfcc_row)
@@ -105,13 +106,14 @@ def load_dataset(dataset_path):
 	return train, valid, test
 
 def nomlize_data_row(data_row):
+    # minimize the data row and eraser the nan data
 	for data in range(len(data_row)):
 		data_row[data] = data_row[data]
 
 		if math.isnan(data_row[data]):
 			data_row[data] = 0
 
-	return data_row
+	return data_row[0:10]#95dim mfcc vector only tale the first 10 as a new vector to reduce the data mass
 
 def changestringtofloat(stringss):
 	ta = 0

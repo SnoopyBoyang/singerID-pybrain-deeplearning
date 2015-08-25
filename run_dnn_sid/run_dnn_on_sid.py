@@ -12,9 +12,10 @@ train_data = trainset[0]
 train_target = trainset[1]
 
 # set the layers parm,and the max is 8 now
-layers = [95, 1000, 1000, 1000,1000,1]
+layers = [95, 80, 60, 30,25,20]
 # run the dnn ,first autoencoder and then DNNRegressor
-autoencoder = dnn.AutoEncoder(train_data, train_data, train_target, layers, hidden_layer="TanhLayer", final_layer="TanhLayer", compression_epochs=5, bias=True, autoencoding_only=True)
+autoencoder = dnn.AutoEncoder(train_data, train_data, train_target, layers, hidden_layer="TanhLayer", final_layer="SoftmaxLayer", compression_epochs=5, bias=True, autoencoding_only=True, dropout_on=True)
+print("1here is okay")#============================================================
 autoencoder.fit()
 # time end
 timeend = time.time()

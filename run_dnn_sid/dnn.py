@@ -68,6 +68,7 @@ class AutoEncoder(object):
 
     def fit(self):
         autoencoder, _, _, _ = self._train()
+        print("2fit is in here and it passed train then will be sortModules")#====================================
         autoencoder.sortModules()
         return autoencoder
 
@@ -107,18 +108,29 @@ class AutoEncoder(object):
                 bottleneck.addConnection(bias_in)
                 bottleneck.addConnection(bias_hidden)
             bottleneck.sortModules()
+            print("3here network is okay bottleneck")#====================================
 
             """ train the bottleneck """
             print "\n...training for layer ", prior, " to ", current
             ds = SupervisedDataSet(prior,prior)
+            print ("5here supervised dataset was built")#==============================
+            print("====================compressed_data_size=============")
+            print compressed_data.__sizeof__()
             if self.dropout_on:
                 noisy_data, originals = self.dropout(compressed_data, noise=0.2, bag=1, debug=True)
+                print("6here dropout is begin processing and it's okay")#==============================
+                print "=============noisylen================"
+                print len(noisy_data)#=====
                 for i, n in enumerate(noisy_data):
                     original = originals[i]
+
                     ds.addSample(n, original)
+
+                print("7.drop out add nosizy sample success")#=============================
             else:
                 for d in (compressed_data):
                     ds.addSample(d, d)
+            print("4here begin bp bp bp")#============================================
             trainer = BackpropTrainer(bottleneck, dataset=ds, learningrate=0.001, momentum=0.05,
                                       verbose=self.verbose, weightdecay=0.05)
             trainer.trainEpochs(self.compression_epochs)
@@ -136,7 +148,9 @@ class AutoEncoder(object):
             compressor.addConnection(in_to_hidden)
             compressor.sortModules()
             compressed_data = [compressor.activate(d) for d in compressed_data]
+            del compressed_data  #del==============================================
             compressed_supervised = [compressor.activate(d) for d in compressed_supervised]
+            del compressed_supervised  #del==============================================
 
             self.nn.append(compressor)
 
@@ -324,16 +338,17 @@ def test():
     targets = []
     targets.append(0)
     targets.append(1)
-    targets.append(2)
-    targets.append(3)
-    targets.append(4)
-    targets.append(5)
+    targets.append(0)
+    targets.append(1)
+    targets.append(0)
+    targets.append(1)
 
-    layers = [4, 3, 2, 1]
-    dnn = AutoEncoder(data, data, targets, layers, hidden_layer="TanhLayer", final_layer="TanhLayer", compression_epochs=50, bias=True, autoencoding_only=True)
+    layers = [4, 2, 2, 2]
+    dnn = AutoEncoder(data, data, targets, layers, hidden_layer="SigmoidLayer", final_layer="SoftmaxLayer", compression_epochs=50, bias=True, autoencoding_only=True)
     # dnn = DNNRegressor(data, targets, layers, hidden_layer="TanhLayer", final_layer="TanhLayer",
     # compression_epochs=50, bias=True, autoencoding_only=False)
 
     dnn.fit()
     print dnn.predict([1,1,0.1,0])
     print dnn.predict([0, 0, 1, 1])
+# test()
