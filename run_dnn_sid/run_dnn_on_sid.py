@@ -1,8 +1,9 @@
 __author__ = 'zhangxulong'
-
+from numpy import *
 import dnn
 import time
 from bulid_dataset import load_dataset
+from pybrain.utilities import percentError
 # time_start
 timestart = time.time()
 # trainset, validset, testset = music_preprocess.load_dataset("sid.pkl")
@@ -21,3 +22,15 @@ autoencoder.fit()
 timeend = time.time()
 # train time
 traintime = timeend - timestart
+print"====================train the dnn take %d second =========================="%traintime
+#test
+test_time_start=time.time()
+test_target= testset[1]
+predict_target=[]
+for test_data in testset[0]:
+    predict_target.append( argmax(autoencoder.predict(test_data)))
+test_result= 100-percentError(predict_target,test_target)
+print "the test result is %s"%str(test_result)
+test_time_end=time.time()
+test_time= test_time_end-test_time_start
+print"====================make the test take %d second =========================="%test_time

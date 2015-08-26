@@ -67,22 +67,24 @@
 # print datamfcc_test[0,1]
 # print count
 # print datamfcc_test[2,:].size
-import numpy as np
-data=[]
-print "data=[]"
-print data
-print("data_min_row=[]")
-data_min_row=[]
-print data_min_row
-data=np.array([[1 ,2 ,3],[22,33,44],[555,666,777],[1234,3456,5543]],dtype=int)
-
-print "data"
-print data
-for row in range(len(data[1])):
-    print"data_row"
-    data_row=data[:,row]
-    print(data_row)
-    data_min_row=data_row[0:2]
-    print "data_min_row"
-    print data_min_row
-print "okay"
+# import numpy as np
+# data=[]
+# print "data=[]"
+# print data
+# print("data_min_row=[]")
+# data_min_row=[]
+# print data_min_row
+# data=np.array([[1 ,2 ,3],[22,33,44],[555,666,777],[1234,3456,5543]],dtype=int)
+#
+# print "data"
+# print data
+# for row in range(len(data[1])):
+#     print"data_row"
+#     data_row=data[:,row]
+#     print(data_row)
+#     data_min_row=data_row[0:2]
+#     print "data_min_row"
+#     print data_min_row
+# print "okay"
+cmd = "hello world & git push it to the github, okay?"
+print "A: pls tell me what should I do for you ? B:%s"%cmd
