@@ -4,8 +4,8 @@ from pybrain.datasets import SupervisedDataSet, ClassificationDataSet
 from pybrain.structure import BiasUnit, FeedForwardNetwork, FullConnection
 from pybrain.structure import LinearLayer, SigmoidLayer, TanhLayer, SoftmaxLayer
 import numpy
+from numpy import *
 import copy
-
 """ At this point, to use the autoencoder, you must always add one more layer into the layers argument
 than you actually want.If you want 3 layers with dimensions 10,8,5 then you use layers=[10,8,5,1],
 where the 1 can be any number you want. This is because the softmax layer still expects to be trained.
@@ -328,27 +328,35 @@ class DNNRegressor(AutoEncoder):
 
 def test():
     data = []
-    data.append([0,0,1,1])
-    data.append([0,0,1,0.9])
-    data.append([0,0,0.9,0.9])
-    data.append([0.8,1,0,0])
+    data.append([1,1,1,1])
+    data.append([10,30,50,20])
+    data.append([5,8,7,9])
+    data.append([4,3,6,5])
     data.append([1,1,0.1,0])
     data.append([1,0.9,0,0.2])
 
     targets = []
     targets.append(0)
     targets.append(1)
+    targets.append(2)
     targets.append(0)
     targets.append(1)
-    targets.append(0)
-    targets.append(1)
+    targets.append(2)
 
-    layers = [4, 2, 2, 2]
-    dnn = AutoEncoder(data, data, targets, layers, hidden_layer="SigmoidLayer", final_layer="SoftmaxLayer", compression_epochs=50, bias=True, autoencoding_only=True)
+    layers = [4, 2, 2, 3]
+    dnn = AutoEncoder(data, data, targets, layers, hidden_layer="TanhLayer", final_layer="SoftmaxLayer", compression_epochs=50, bias=True)
     # dnn = DNNRegressor(data, targets, layers, hidden_layer="TanhLayer", final_layer="TanhLayer",
     # compression_epochs=50, bias=True, autoencoding_only=False)
 
     dnn.fit()
-    print dnn.predict([1,1,0.1,0])
-    print dnn.predict([0, 0, 1, 1])
-# test()
+
+
+
+    p1 =argmax(dnn.predict([1,1,0.1,0]))
+    print "p1 is " + str(p1)
+    p2 =argmax(dnn.predict([5, 8, 7, 9]))
+    print "p2 is " + str(p2)
+    p3 =argmax(dnn.predict([10,30,50,20]))
+    print "p3 is " + str(p3)
+
+#test()
