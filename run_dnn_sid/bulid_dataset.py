@@ -39,7 +39,7 @@ def grab_data(path):
 		singer_name = get_singer_name(path + '/' + filename)
 		print("==================================================================")
 		print(singer_name)
-		singger_name_float = changestringtofloat(singer_name)
+		singger_name_float = changestringtoClassNo(singer_name)
 		print singer_name
 
 		print "===============singername@mfcc============="
@@ -114,7 +114,12 @@ def nomlize_data_row(data_row):
 			data_row[data] = 0
 
 	return data_row[0:10]#95dim mfcc vector only tale the first 10 as a new vector to reduce the data mass
+def changestringtoClassNo(Stringss):
+    #switch 20 singers to NO. 0:19
 
+    singerDic={"aerosmith":0,"beatles":1,"creedence_clearwater_revival":2,"cure":3,"dave_matthews_band":4,"depeche_mode":5,"fleetwood_mac":6,"garth_brooks":7,"green_day":8,"led_zeppelin":9,"madonna":10,"metallica":11,"prince":12,"queen":13,"radiohead":14,"roxette":15,"steely_dan":16,"suzanne_vega":17,"tori_amos":18,"u2":19}
+    classNo = singerDic[Stringss]
+    return classNo
 def changestringtofloat(stringss):
 	ta = 0
 	for c in stringss:
