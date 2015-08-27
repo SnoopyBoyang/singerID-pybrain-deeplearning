@@ -86,5 +86,24 @@
 #     print "data_min_row"
 #     print data_min_row
 # print "okay"
-cmd = "hello world & git push it to the github, okay?"
-print "A: pls tell me what should I do for you ? B:%s"%cmd
+# import numpy as np
+# cmd = "hello world & git push it to the github, okay?"
+# print "A: pls tell me what should I do for you ? B:%s"%cmd
+# test_arr= np.array([[1,1,2],[1,1,3]],dtype=int)
+# print test_arr
+# ori=test_arr[0]
+# print"===========ori==========="
+# print ori
+# upd=test_arr[1]
+# print"===========upd==========="
+# print upd
+# from pybrain.utilities import percentError
+# result=100-percentError(upd,ori)
+# print "=============result====="
+# print "====reuult is %.2f%%===== "%result
+sli=[]
+sli.append([1,1,1,1])
+sli.append([1,2,1,1])
+sli.append([1,3,3,1])
+sli.append([1,4,4,4])
+

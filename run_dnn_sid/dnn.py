@@ -117,7 +117,7 @@ class AutoEncoder(object):
             print("8.====================compressed_data_size=============")
             print compressed_data.__sizeof__()
             if self.dropout_on:
-                noisy_data, originals = self.dropout(compressed_data, noise=0.2, bag=1, debug=True)
+                noisy_data, originals = self.dropout(compressed_data, noise=0.2, bag=1, debug=False)
                 print("6here dropout is begin processing and it's okay")#==============================
                 print "=============noisylen================"
                 print len(noisy_data)#=====
@@ -135,8 +135,9 @@ class AutoEncoder(object):
                                       verbose=self.verbose, weightdecay=0.05)
             trainer.trainEpochs(self.compression_epochs)
             if self.verbose:
-                print "...data:\n...", compressed_data[0][:95],\
-                    "\nreconstructed to:\n...", bottleneck.activate(compressed_data[0])[:95]
+                print "...data:\n...", compressed_data[0][:10],\
+                    "\nreconstructed to:\n...", bottleneck.activate(compressed_data[0])[:10]
+                    #just used 10dim of 95 dim mfcc
 
             hidden_layers.append(in_to_hidden)
             if self.bias: bias_layers.append(bias_in)
