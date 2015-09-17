@@ -6,10 +6,12 @@ from pybrain.structure import LinearLayer, SigmoidLayer, TanhLayer, SoftmaxLayer
 import numpy
 from numpy import *
 import copy
+
 """ At this point, to use the autoencoder, you must always add one more layer into the layers argument
 than you actually want.If you want 3 layers with dimensions 10,8,5 then you use layers=[10,8,5,1],
 where the 1 can be any number you want. This is because the softmax layer still expects to be trained.
 It should eventually be moved to a different class."""
+
 
 class AutoEncoder(object):
     def __init__(self, supervised, unsupervised, targets, layers=[], hidden_layer="SigmoidLayer",
@@ -68,7 +70,7 @@ class AutoEncoder(object):
 
     def fit(self):
         autoencoder, _, _, _ = self._train()
-        print("2fit is in here and it passed train then will be sortModules")#====================================
+        print("2fit is in here and it passed train then will be sortModules")  # ====================================
         autoencoder.sortModules()
         return autoencoder
 
@@ -108,36 +110,36 @@ class AutoEncoder(object):
                 bottleneck.addConnection(bias_in)
                 bottleneck.addConnection(bias_hidden)
             bottleneck.sortModules()
-            print("3here network is okay bottleneck")#====================================
+            print("3here network is okay bottleneck")  # ====================================
 
             """ train the bottleneck """
             print "\n...training for layer ", prior, " to ", current
-            ds = SupervisedDataSet(prior,prior)
-            print ("5here supervised dataset was built")#==============================
+            ds = SupervisedDataSet(prior, prior)
+            print ("5here supervised dataset was built")  # ==============================
             print("8.====================compressed_data_size=============")
             print compressed_data.__sizeof__()
             if self.dropout_on:
                 noisy_data, originals = self.dropout(compressed_data, noise=0.2, bag=1, debug=False)
-                print("6here dropout is begin processing and it's okay")#==============================
+                print("6here dropout is begin processing and it's okay")  # ==============================
                 print "=============noisylen================"
-                print len(noisy_data)#=====
+                print len(noisy_data)  # =====
                 for i, n in enumerate(noisy_data):
                     original = originals[i]
 
                     ds.addSample(n, original)
 
-                print("7.drop out add nosizy sample success")#=============================
+                print("7.drop out add nosizy sample success")  # =============================
             else:
                 for d in (compressed_data):
                     ds.addSample(d, d)
-            print("4here begin bp bp bp")#============================================
+            print("4here begin bp bp bp")  # ============================================
             trainer = BackpropTrainer(bottleneck, dataset=ds, learningrate=0.001, momentum=0.05,
                                       verbose=self.verbose, weightdecay=0.05)
             trainer.trainEpochs(self.compression_epochs)
             if self.verbose:
-                print "...data:\n...", compressed_data[0][:10],\
+                print "...data:\n...", compressed_data[0][:10], \
                     "\nreconstructed to:\n...", bottleneck.activate(compressed_data[0])[:10]
-                    #just used 10dim of 95 dim mfcc
+                # just used 10dim of 95 dim mfcc
 
             hidden_layers.append(in_to_hidden)
             if self.bias: bias_layers.append(bias_in)
@@ -149,9 +151,9 @@ class AutoEncoder(object):
             compressor.addConnection(in_to_hidden)
             compressor.sortModules()
             compressed_data = [compressor.activate(d) for d in compressed_data]
-            #del compressed_data  #del==============================================
+            # del compressed_data  #del==============================================
             compressed_supervised = [compressor.activate(d) for d in compressed_supervised]
-            #del compressed_supervised  #del==============================================
+            # del compressed_supervised  #del==============================================
 
             self.nn.append(compressor)
 
@@ -178,15 +180,14 @@ class AutoEncoder(object):
         else:
             print "...training for a regression network"
             ds = SupervisedDataSet(self.layers[-2], self.layers[-1])
-        bag = 1 
+        bag = 1
         noisy_data, _ = self.dropout(compressed_supervised, noise=0.5, bag=bag, debug=True)
         bagged_targets = []
         for t in self.targets:
             for b in range(bag):
                 bagged_targets.append(t)
 
-        for i,d in enumerate(noisy_data):
-
+        for i, d in enumerate(noisy_data):
             target = bagged_targets[i]
             ds.addSample(d, target)
 
@@ -198,17 +199,17 @@ class AutoEncoder(object):
                                   momentum=0.05, verbose=self.verbose, weightdecay=0.05)
         trainer.trainEpochs(self.compression_epochs)
         self.nn.append(softmax)
-        #print "ABOUT TO APPEND"
-        #print len(in_to_out.params)
+        # print "ABOUT TO APPEND"
+        # print len(in_to_out.params)
         hidden_layers.append(in_to_out)
         if self.bias:
             bias_layers.append(bias_in)
 
         """ Recreate the whole thing """
-        #print "hidden layers: " + str(hidden_layers)
-        #print "bias layers: " + str(bias_layers)
-        #print "len hidden layers: " + str(len(hidden_layers))
-        #print "len bias layers: " + str(len(bias_layers))
+        # print "hidden layers: " + str(hidden_layers)
+        # print "bias layers: " + str(bias_layers)
+        # print "len hidden layers: " + str(len(hidden_layers))
+        # print "len bias layers: " + str(len(bias_layers))
         # connect the first two
         autoencoder = FeedForwardNetwork()
         first_layer = hidden_layers[0].inmod
@@ -220,7 +221,7 @@ class AutoEncoder(object):
 
         # decide whether this should be the output layer or not
         if self.autoencoding_only and (len(self.layers) <= 3):
-        #  TODO change this to 2 when you aren't using the softmax above
+            #  TODO change this to 2 when you aren't using the softmax above
             autoencoder.addOutputModule(next_layer)
         else:
             autoencoder.addModule(next_layer)
@@ -229,10 +230,10 @@ class AutoEncoder(object):
             bias_unit = bias.inmod
             autoencoder.addModule(bias_unit)
             connection = FullConnection(bias_unit, next_layer)
-            #print bias.params
+            # print bias.params
             connection.params[:] = bias.params
             autoencoder.addConnection(connection)
-            #print connection.params
+            # print connection.params
 
         # connect the middle layers
         for i, h in enumerate(hidden_layers[1:-1]):
@@ -249,7 +250,7 @@ class AutoEncoder(object):
             next_layer = new_next_layer
 
             if self.bias:
-                bias = bias_layers[i+1]
+                bias = bias_layers[i + 1]
                 bias_unit = bias.inmod
                 autoencoder.addModule(bias_unit)
                 connection = FullConnection(bias_unit, next_layer)
@@ -271,7 +272,7 @@ class AutoEncoder(object):
 
         dropped = []
         originals = []
-        bag = range(bag) # increase by this amount
+        bag = range(bag)  # increase by this amount
         for d in data:
             for b in bag:
                 numpy.random.shuffle(merged)
@@ -284,10 +285,11 @@ class AutoEncoder(object):
             print "...noisy data: ", dropped[0][:10]
         return dropped, originals
 
-class DNNRegressor(AutoEncoder):
 
+class DNNRegressor(AutoEncoder):
     """ This is really ugly, but has to happen. Need to create a new network,
     or else it can't be trained for smoothing by pybrain's trainer.train() method. """
+
     def fit(self):
         global new
         autoencoder, hidden_layers, next_layer, bias_layers = self._train()
@@ -295,17 +297,24 @@ class DNNRegressor(AutoEncoder):
         if len(self.layers) == 2:
             new = buildNetwork(self.layers[0], self.layers[1], hiddenclass=self.hidden_layer, outclass=self.final_layer)
         if len(self.layers) == 3:
-            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], hiddenclass=self.hidden_layer, outclass=self.final_layer)
+            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], hiddenclass=self.hidden_layer,
+                               outclass=self.final_layer)
         if len(self.layers) == 4:
-            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], hiddenclass=self.hidden_layer, outclass=self.final_layer)
+            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3],
+                               hiddenclass=self.hidden_layer, outclass=self.final_layer)
         if len(self.layers) == 5:
-            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4], hiddenclass=self.hidden_layer, outclass=self.final_layer)
+            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4],
+                               hiddenclass=self.hidden_layer, outclass=self.final_layer)
         if len(self.layers) == 6:
-            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4], self.layers[5], hiddenclass=self.hidden_layer, outclass=self.final_layer)
+            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4],
+                               self.layers[5], hiddenclass=self.hidden_layer, outclass=self.final_layer)
         if len(self.layers) == 7:
-            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4], self.layers[5], self.layers[6], hiddenclass=self.hidden_layer, outclass=self.final_layer)
+            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4],
+                               self.layers[5], self.layers[6], hiddenclass=self.hidden_layer, outclass=self.final_layer)
         if len(self.layers) == 8:
-            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4], self.layers[5], self.layers[6], self.layers[8], hiddenclass=self.hidden_layer, outclass=self.final_layer)
+            new = buildNetwork(self.layers[0], self.layers[1], self.layers[2], self.layers[3], self.layers[4],
+                               self.layers[5], self.layers[6], self.layers[8], hiddenclass=self.hidden_layer,
+                               outclass=self.final_layer)
         new.params[:] = with_top_layer.params
         return new
 
@@ -327,14 +336,15 @@ class DNNRegressor(AutoEncoder):
         autoencoder.sortModules()
         return autoencoder
 
+
 def test():
     data = []
-    data.append([1,1,1,1])
-    data.append([10,30,50,20])
-    data.append([5,8,7,9])
-    data.append([4,3,6,5])
-    data.append([1,1,0.1,0])
-    data.append([1,0.9,0,0.2])
+    data.append([1, 1, 1, 1])
+    data.append([10, 30, 50, 20])
+    data.append([5, 8, 7, 9])
+    data.append([4, 3, 6, 5])
+    data.append([1, 1, 0.1, 0])
+    data.append([1, 0.9, 0, 0.2])
 
     targets = []
     targets.append(0)
@@ -345,19 +355,18 @@ def test():
     targets.append(2)
 
     layers = [4, 2, 2, 3]
-    dnn = AutoEncoder(data, data, targets, layers, hidden_layer="TanhLayer", final_layer="SoftmaxLayer", compression_epochs=50, bias=True)
+    dnn = AutoEncoder(data, data, targets, layers, hidden_layer="TanhLayer", final_layer="SoftmaxLayer",
+                      compression_epochs=50, bias=True)
     # dnn = DNNRegressor(data, targets, layers, hidden_layer="TanhLayer", final_layer="TanhLayer",
     # compression_epochs=50, bias=True, autoencoding_only=False)
 
     dnn.fit()
 
-
-
-    p1 =argmax(dnn.predict([1,1,0.1,0]))
+    p1 = argmax(dnn.predict([1, 1, 0.1, 0]))
     print "p1 is " + str(p1)
-    p2 =argmax(dnn.predict([5, 8, 7, 9]))
+    p2 = argmax(dnn.predict([5, 8, 7, 9]))
     print "p2 is " + str(p2)
-    p3 =argmax(dnn.predict([10,30,50,20]))
+    p3 = argmax(dnn.predict([10, 30, 50, 20]))
     print "p3 is " + str(p3)
 
-#test()
+    # test()

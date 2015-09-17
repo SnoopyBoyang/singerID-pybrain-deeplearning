@@ -6,6 +6,7 @@ __copyright__ = "Copyright (C) 2010  Michael Casey, Dartmouth College, All Right
 __license__ = "New BSD License"
 __email__ = 'mcasey@dartmouth.edu'
 
+
 # Exception Handling class
 class BregmanError(Exception):
     def __init__(self):

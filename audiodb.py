@@ -417,7 +417,6 @@ class adb:
             pylab.title(title_string)
         pylab.colorbar()
 
-
     @staticmethod
     def feature_scale(M, normalize=False, dbscale=False, norm=False, bels=False):
         """

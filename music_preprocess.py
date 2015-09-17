@@ -22,6 +22,8 @@ feature_params = {'sample_rate': 44100, 'feature': 'mfcc', 'nbpo': 12, 'ncoef': 
                   'hi': 16000, 'nfft': 16384, 'wfft': 8192, 'nhop': 4410, 'log10': False, 'magnitude': True,
                   'power_ext': ".power", 'intensify': False, 'verbosity': 1, 'nsamples': None}
 dataset = []
+
+
 def grab_data(path):
     # grab the data and extract the MFCC feature of every music audio
     print "grab_data"
@@ -30,11 +32,15 @@ def grab_data(path):
         mfcc = Features(path + '/' + filename, feature_params)
         datamfcc = mfcc.MFCC  # MFCC features
         dataset.append((datamfcc, filename))
+
+
 def pkl_dataset(data_set):
     f = open('sid.pkl', 'wb')
     dump(data_set, f, -1)
     print 'pkl_dataset'
     f.close()
+
+
 def load_dataset(dataset_path):
     dataset_path = 'sid.pkl'
     f = open(dataset_path, 'rb')
@@ -61,6 +67,8 @@ def load_dataset(dataset_path):
     for index in range(validL, totalL):
         test.append((inputdata[index], tagetlable[index]))
     return train, valid, test
+
+
 def changestringtofloat(stringss):
     ta = 0
     for c in stringss:
@@ -73,6 +81,7 @@ def main():
     pylab.show()
     pkl_dataset(dataset)
     trainset, validset, testset = load_dataset('sid.pkl')
+
 
 if __name__ == '__main__':
     main()
